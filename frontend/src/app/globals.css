@@ -1,0 +1,190 @@
+@import "tailwindcss";
+
+/* ─── Neumorphic Light Theme (Tactile Industrial Hardware) ─── */
+:root {
+  --bg:            #e8ecf2;   /* Tactile matte neutral canvas */
+  --surface:       #e8ecf2;   /* Extruded neumorphic surface */
+  --raised:        #e8ecf2;   /* Cards share surface color, elevated by dual shadows */
+  --hover:         #dfe4eb;   /* Subtle hover state */
+
+  /* Dual Neumorphic Shadows (Extruded & Inset) */
+  --shadow-dark:   rgba(163, 177, 198, 0.65);
+  --shadow-light:  rgba(255, 255, 255, 0.95);
+  --border-subtle: rgba(255, 255, 255, 0.6);
+  --border:        #d1d8e4;
+  --border-hi:     #b8c2d3;
+
+  /* Typography — crisp & sharp */
+  --text:          #162032;   /* Deep slate 900 */
+  --text-2:        #3a4861;   /* Slate 700 */
+  --text-3:        #62718d;   /* Slate 500 — strong contrast */
+
+  /* Accents — Engineering Blue & Precision Teal (NO purple gradient) */
+  --accent:        #1d4ed8;   /* Bold engineering blue */
+  --accent-bg:     rgba(29, 78, 216, 0.08);
+  --accent-bd:     rgba(29, 78, 216, 0.35);
+  --accent-hi:     #172554;
+
+  --teal:          #0f766e;   /* Precision teal */
+  --teal-bg:       rgba(15, 118, 110, 0.08);
+  --teal-bd:       rgba(15, 118, 110, 0.35);
+  --teal-hi:       #042f2e;
+
+  --mono: "Geist Mono", "JetBrains Mono", ui-monospace, monospace;
+  --sans: "Geist", "Inter", system-ui, -apple-system, sans-serif;
+}
+
+/* ─── Neumorphic Dark Theme (Matte Slate Graphite — NO purple gradient) ─── */
+[data-theme="dark"] {
+  --bg:            #14171f;   /* Deep matte graphite */
+  --surface:       #181c26;   /* Soft slate extruded surface */
+  --raised:        #181c26;
+  --hover:         #1f2430;
+
+  /* Neumorphic Dark Dual Shadows */
+  --shadow-dark:   rgba(8, 10, 14, 0.9);
+  --shadow-light:  rgba(36, 42, 58, 0.45);
+  --border-subtle: rgba(255, 255, 255, 0.04);
+  --border:        #232838;
+  --border-hi:     #343b50;
+
+  --text:          #f1f5f9;   /* Crisp slate white */
+  --text-2:        #cbd5e1;   /* Slate 300 */
+  --text-3:        #8e9bb0;   /* Slate 400 */
+
+  --accent:        #3b82f6;   /* Clean electric blue */
+  --accent-bg:     rgba(59, 130, 246, 0.14);
+  --accent-bd:     rgba(59, 130, 246, 0.4);
+  --accent-hi:     #dbeafe;
+
+  --teal:          #14b8a6;   /* Precision cyan/teal */
+  --teal-bg:       rgba(20, 184, 166, 0.12);
+  --teal-bd:       rgba(20, 184, 166, 0.38);
+  --teal-hi:       #ccfbf1;
+}
+
+/* ─── Reset ─── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 13px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* ─── Neumorphic Shadows & Utility Classes ─── */
+.neu-flat {
+  background: var(--surface);
+  box-shadow: 4px 4px 10px var(--shadow-dark), -3px -3px 8px var(--shadow-light);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+}
+
+.neu-raised {
+  background: var(--raised);
+  box-shadow: 5px 5px 12px var(--shadow-dark), -4px -4px 10px var(--shadow-light);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+}
+
+.neu-inset {
+  background: var(--surface);
+  box-shadow: inset 2px 2px 6px var(--shadow-dark), inset -2px -2px 6px var(--shadow-light);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+}
+
+.neu-btn {
+  background: var(--surface);
+  box-shadow: 3px 3px 7px var(--shadow-dark), -3px -3px 7px var(--shadow-light);
+  border: 1px solid var(--border-subtle);
+  border-radius: 7px;
+  cursor: pointer;
+  transition: box-shadow 0.15s ease, transform 0.12s ease;
+}
+
+.neu-btn:hover {
+  box-shadow: 4px 4px 9px var(--shadow-dark), -4px -4px 9px var(--shadow-light);
+  transform: translateY(-1px);
+}
+
+.neu-btn:active, .neu-btn-active {
+  box-shadow: inset 2px 2px 5px var(--shadow-dark), inset -2px -2px 5px var(--shadow-light);
+  transform: translateY(0);
+}
+
+.neu-pill {
+  background: var(--surface);
+  box-shadow: 2px 2px 5px var(--shadow-dark), -2px -2px 5px var(--shadow-light);
+  border: 1px solid var(--border-subtle);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.neu-pill:hover {
+  transform: translateY(-1px);
+}
+
+.neu-pill.active {
+  box-shadow: inset 2px 2px 4px var(--shadow-dark), inset -2px -2px 4px var(--shadow-light);
+  border-color: var(--accent);
+}
+
+/* ─── Scrollbars ─── */
+::-webkit-scrollbar        { width: 5px; height: 5px; }
+::-webkit-scrollbar-track  { background: transparent; }
+::-webkit-scrollbar-thumb  { background: var(--border-hi); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-3); }
+
+/* ─── Keyframes ─── */
+@keyframes fade-slide-up {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-in {
+  from { opacity: 0; } to { opacity: 1; }
+}
+@keyframes token-appear {
+  0%   { opacity: 0; transform: scale(0.8) translateY(2px); }
+  60%  { transform: scale(1.03); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+@keyframes wave-draw {
+  from { stroke-dashoffset: 800; }
+  to   { stroke-dashoffset: 0; }
+}
+@keyframes bar-expand {
+  from { width: 0; }
+}
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1; } 50% { opacity: 0; }
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─── Animation utilities ─── */
+.anim-enter  { animation: fade-slide-up 0.25s cubic-bezier(0.16,1,0.3,1) both; }
+.anim-fadein { animation: fade-in 0.2s ease both; }
+.anim-token  { animation: token-appear 0.18s cubic-bezier(0.16,1,0.3,1) both; }
+.anim-wave   { stroke-dasharray: 800; animation: wave-draw 0.85s cubic-bezier(0.16,1,0.3,1) forwards; }
+.anim-bar    { animation: bar-expand 0.4s cubic-bezier(0.16,1,0.3,1) both; }
+.anim-blink  { animation: cursor-blink 1s step-end infinite; }
+.anim-spin   { animation: spin 0.65s linear infinite; }
+
+/* ─── Scroll helpers ─── */
+.scroll-y { overflow-y: auto; overflow-x: hidden; }
+.scroll-x { overflow-x: auto; overflow-y: hidden; }
+.scroll-a { overflow: auto; }
+
+/* ─── Heat map cell ─── */
+.attn-cell {
+  transition: transform 90ms ease, box-shadow 90ms ease, background-color 100ms ease;
+}
