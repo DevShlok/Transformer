@@ -280,10 +280,11 @@ Returns model operational status and architectural dimensions.
 ```json
 {
   "status": "healthy",
-  "model": "Falconsai/text_summarization",
-  "d_model": 512,
-  "num_heads": 8,
-  "num_layers": 6
+  "model": "facebook/bart-large-cnn",
+  "d_model": 1024,
+  "num_heads": 16,
+  "num_layers": 12,
+  "vocab_size": 50264
 }
 ```
 

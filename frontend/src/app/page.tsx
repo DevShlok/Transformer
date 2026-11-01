@@ -259,7 +259,7 @@ function Phase1Tokenizer({
         <NeuKpiCard label="Input tokens"   value={tokens.length} accent />
         <NeuKpiCard label="Revealed"       value={visible || tokens.length} />
         <NeuKpiCard label="Sub-word frags" value={subwords} />
-        <NeuKpiCard label="Vocab size"     value="32,128" />
+        <NeuKpiCard label="Vocab size"     value="50,264" />
       </div>
 
       {/* Token grid with Interactive Clickable Filters */}
@@ -894,7 +894,7 @@ function Phase4Decoder({ telemetry, isDark }: { telemetry: TelemetryResponse; is
     { title: "Residual Connection & RMSNorm", math: "x = RMSNorm(x + Sublayer(x))", desc: "Preserves gradient propagation through deep decoder stack and stabilizes activations." },
     { title: "Encoder-Decoder Cross-Attention", math: "Q = Dec(x), K,V = Enc(Memory)", desc: "Queries from previous decoder stage query the memory keys and values of the full encoder." },
     { title: "Position-wise Feed-Forward", math: "FFN(x) = max(0, xW1 + b1)W2 + b2", desc: "Two linear transformations with ReLU/GELU activation projecting to d_ff = 2048." },
-    { title: "Final LayerNorm & LM Head", math: "P(w) = softmax(W_vocab · x)", desc: "Projects final d_model dimensional state to 32,128 vocabulary logits." },
+    { title: "Final LayerNorm & LM Head", math: "P(w) = softmax(W_vocab · x)", desc: "Projects final d_model dimensional state to 50,264 vocabulary logits." },
   ];
 
   return (
@@ -1530,13 +1530,13 @@ export default function Home() {
               }}
             />
             <T size={12} weight={600} mono color={!mounted ? "text-3" : backendOn ? "teal" : "text-2"}>
-              {!mounted ? "Connecting…" : backendOn ? "Falconsai T5 · Seq2Seq" : "Simulation Fallback"}
+              {!mounted ? "Connecting…" : backendOn ? "BART Large CNN · Seq2Seq" : "Simulation Fallback"}
             </T>
           </div>
 
           {telemetry && (
             <div style={{ display: "flex", gap: 12, paddingLeft: 14, borderLeft: "1px solid var(--border)" }}>
-              {[`d_model = ${telemetry.d_model}`, `heads = ${telemetry.num_heads}`, "vocab = 32,128"].map((s) => (
+              {[`d_model = ${telemetry.d_model}`, `heads = ${telemetry.num_heads}`, "vocab = 50,264"].map((s) => (
                 <T key={s} size={11} weight={600} mono color="text-3">{s}</T>
               ))}
             </div>
@@ -1826,7 +1826,7 @@ export default function Home() {
                     {summaryText}
                   </p>
                   <p style={{ fontSize: 11, fontWeight: 600, color: "var(--text-3)", fontFamily: "var(--mono)", marginTop: 8, marginBottom: 0 }}>
-                    T5 decoded · Click &quot;Run Full Transformer&quot; to replay step-by-step
+                    BART decoded · Click &quot;Run Full Transformer&quot; to replay step-by-step
                   </p>
                 </div>
               )}
@@ -2067,7 +2067,7 @@ export default function Home() {
             )}
 
             <div style={{ borderTop: "1px solid var(--border)", paddingTop: 10, flexShrink: 0, display: "flex", flexDirection: "column", gap: 4 }}>
-              <T size={11} weight={600} mono color="text-3">Vocab: 32,128 · Beam Search</T>
+              <T size={11} weight={600} mono color="text-3">Vocab: 50,264 · Beam Search</T>
               {telemetry?.generated_sequence[genStep] && (
                 <T size={11} weight={600} mono color="text-2">
                   Selected:{" "}

@@ -53,7 +53,12 @@ frontend/tsconfig.tsbuildinfo
 .env.production.local
 frontend/.env.local
 
-# IDE & Operating System
+# Large Model Weights
+model/*.safetensors
+model/*.bin
+model/*.h5
+model/*.msgpack
+model/*.ot
 .vscode/
 .idea/
 *.swp
