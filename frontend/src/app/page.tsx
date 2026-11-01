@@ -1775,7 +1775,7 @@ export default function Home() {
         {/* ── ROW 1: Source + Summary (Neumorphic Inset Wells) ─────────── */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, minHeight: 0 }}>
           {/* Source Document */}
-          <NeuPanel style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          <NeuPanel style={{ display: "flex", flexDirection: "column", gap: 8, minHeight: 0 }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexShrink: 0 }}>
               <SectionLabel>Source Document</SectionLabel>
               <T size={11} weight={600} mono color="text-3">
@@ -1804,7 +1804,7 @@ export default function Home() {
           </NeuPanel>
 
           {/* Abstractive Summary */}
-          <NeuPanel style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          <NeuPanel style={{ display: "flex", flexDirection: "column", gap: 8, minHeight: 0 }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexShrink: 0 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
                 <div style={{ width: 7, height: 7, borderRadius: "50%", background: "var(--teal)" }} />
@@ -1819,57 +1819,67 @@ export default function Home() {
               </T>
             </div>
 
-            <div className="neu-inset" style={{ flex: 1, padding: "10px 14px", overflowY: "auto" }}>
+            <div className="neu-inset" style={{ flex: 1, padding: "10px 14px", overflowY: "auto", minHeight: 0 }}>
               {!showStreaming && summaryText && (
                 <div className="anim-fadein">
                   <p style={{ fontSize: 13.5, fontWeight: 500, color: "var(--text)", lineHeight: 1.75, margin: 0 }}>
                     {summaryText}
                   </p>
                   <p style={{ fontSize: 11, fontWeight: 600, color: "var(--text-3)", fontFamily: "var(--mono)", marginTop: 8, marginBottom: 0 }}>
-                    T5 decoded output · Click "Run Full Transformer" to replay step-by-step
+                    T5 decoded · Click &quot;Run Full Transformer&quot; to replay step-by-step
                   </p>
                 </div>
               )}
 
-              {/* Streaming tokens — each token is clickable and jumps to Phase 5 synthesis */}
+              {/* Streaming — prose display with clickable inline tokens */}
               {showStreaming && (
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 5, alignContent: "flex-start" }}>
-                  {streaming.map((w, i) => {
-                    const isCurrent = i === streaming.length - 1 && running;
-                    return (
-                      <button
-                        key={i}
-                        onClick={() => {
-                          setPhase(4);
-                          setGenStep(i);
-                        }}
-                        className={`neu-btn anim-token ${isCurrent ? "neu-btn-active" : ""}`}
-                        title={`Click to inspect Step #${i + 1} synthesis`}
+                <div className="anim-fadein" style={{ height: "100%", display: "flex", flexDirection: "column", gap: 8 }}>
+                  <p style={{ fontSize: 13.5, fontWeight: 500, color: "var(--text)", lineHeight: 1.75, margin: 0 }}>
+                    {streaming.map((w, i) => {
+                      const isCurrent = i === streaming.length - 1 && running;
+                      return (
+                        <span
+                          key={i}
+                          onClick={() => { setPhase(4); setGenStep(i); }}
+                          title={`Step #${i + 1} — click to inspect`}
+                          style={{
+                            cursor: "pointer",
+                            borderRadius: 3,
+                            padding: "0 1px",
+                            fontWeight: isCurrent ? 700 : 500,
+                            color: isCurrent ? "var(--accent)" : "var(--text)",
+                            background: isCurrent ? "var(--accent-soft, color-mix(in srgb, var(--accent) 12%, transparent))" : "transparent",
+                            transition: "background 0.15s, color 0.15s",
+                          }}
+                        >
+                          {i > 0 ? " " : ""}{w}
+                        </span>
+                      );
+                    })}
+                    {running && phase === 4 && (
+                      <span
+                        className="anim-blink"
                         style={{
-                          animationDelay: `${Math.min(i * 12, 180)}ms`,
-                          padding: "3px 8px",
-                          borderRadius: 5,
-                          fontSize: 12.5,
-                          fontFamily: "var(--mono)",
-                          fontWeight: isCurrent ? 700 : 500,
-                          color: isCurrent ? "var(--accent)" : "var(--text)",
-                          borderColor: isCurrent ? "var(--accent)" : undefined,
+                          display: "inline-block",
+                          width: 2,
+                          height: "1em",
+                          background: "var(--accent)",
+                          marginLeft: 3,
+                          verticalAlign: "text-bottom",
                         }}
-                      >
-                        {w}
-                      </button>
-                    );
-                  })}
-                  {running && phase === 4 && (
-                    <span className="anim-blink" style={{ display: "inline-block", width: 2, height: 18, background: "var(--accent)", alignSelf: "center" }} />
-                  )}
+                      />
+                    )}
+                  </p>
+                  <p style={{ fontSize: 11, fontWeight: 600, color: "var(--text-3)", fontFamily: "var(--mono)", margin: 0, flexShrink: 0 }}>
+                    {running ? "Generating…" : `${streaming.length} tokens synthesized · click any word to inspect that decode step`}
+                  </p>
                 </div>
               )}
 
               {!summaryText && !showStreaming && (
                 <div style={{ display: "flex", alignItems: "center", height: "100%" }}>
                   <T size={13} weight={500} color="text-3" as="p" style={{ margin: 0 }}>
-                    Click "Run Full Transformer" or "Sample" to synthesize a summary.
+                    Click &quot;Run Full Transformer&quot; or &quot;Sample&quot; to synthesize a summary.
                   </T>
                 </div>
               )}

@@ -5,6 +5,7 @@ from pydantic import BaseModel, Field
 from typing import List, Dict, Any
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 import math
+import re
 
 from transformer_summarizer.math_foundations import PositionalEncoding
 
@@ -82,8 +83,9 @@ def summarize_and_inspect(req: InspectRequest):
             detail={"error": {"code": "EMPTY_INPUT", "message": "Input paragraph cannot be empty."}}
         )
 
-    # Pass input cleanly without artificial prompt mangling
-    t5_prompt = raw_text.strip()
+    # Format prompt with standard T5 summarization prefix for abstractive summarization
+    prefix = "summarize: "
+    t5_prompt = prefix + raw_text.strip()
     inputs = tokenizer(t5_prompt, return_tensors="pt", truncation=True, max_length=4096)
     input_ids = inputs["input_ids"][0]
 
@@ -105,11 +107,13 @@ def summarize_and_inspect(req: InspectRequest):
             return_dict_in_generate=True,
         )
 
-    # Clean input tokens for visualization — no prompt prefix offset needed for Falconsai model
+    # Clean input tokens for visualization — skip the "summarize: " control prefix
+    # so the visualizer starts directly at the user's document text
     raw_tokens = tokenizer.convert_ids_to_tokens(input_ids)
     tokens_list: List[TokenItem] = []
 
-    start_offset = 0  # Falconsai receives raw text; no "summarize:" prefix to strip
+    prefix_ids = tokenizer.encode(prefix, add_special_tokens=False)
+    start_offset = len(prefix_ids)
 
     # Allow richer sequence inspection (up to 64 tokens)
     display_limit = min(len(raw_tokens) - start_offset, 64)
@@ -145,6 +149,10 @@ def summarize_and_inspect(req: InspectRequest):
     avg_matrix = [[round(val, 4) for val in row] for row in avg_matrix]
 
     final_summary = tokenizer.decode(outputs.sequences[0], skip_special_tokens=True).strip()
+    # Strip any leading punctuation or boundary artifacts and ensure proper capitalization
+    final_summary = re.sub(r'^[\s,;:.!?\-–—]+', '', final_summary).strip()
+    if final_summary:
+        final_summary = final_summary[0].upper() + final_summary[1:]
 
     # Extract REAL autoregressive candidate probabilities for every step from outputs.scores
     generated_steps: List[GeneratedTokenStep] = []
@@ -190,6 +198,16 @@ def summarize_and_inspect(req: InspectRequest):
             prob=chosen_prob,
             candidates=candidates
         ))
+
+    # Strip any leading punctuation steps so token sequence mirrors the cleaned summary
+    while generated_steps and re.match(r'^[\s,;:.!?\-–—]+$', generated_steps[0].word):
+        generated_steps.pop(0)
+
+    if generated_steps and generated_steps[0].word:
+        generated_steps[0].word = generated_steps[0].word.capitalize()
+
+    for idx, step in enumerate(generated_steps):
+        step.step = idx + 1
 
     return TelemetryResponse(
         tokens=tokens_list,
